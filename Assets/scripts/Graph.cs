@@ -12,6 +12,9 @@ public class Graph : MonoBehaviour {
 	public GameObject prefabBar = null;
 	public GameObject parentTools = null;
 
+	private double yMin = 0;
+	private double yMax = 0;
+
 	private static SharePricesM sharePriceList;
 
 	// Use this for initialization
@@ -38,25 +41,70 @@ public class Graph : MonoBehaviour {
 		sharePriceList = JsonUtility.FromJson<SharePricesM>(www.downloadHandler.text);
 	}
 
-	public IEnumerator DrawGraph ()
+	private void SearchMinandMaxY (double amount)
 	{
-		print("DrawGraph");
-		yield return StartCoroutine("getSharePriceList");
-		
-		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)-0.3, (float)0.2, (float)1.9), Quaternion.identity);
+		if (amount < yMin)
+			yMin = amount;
+		else if (amount > yMax)
+			yMax = amount;
+	}
+
+	private void SearchMinandMaxYinList ()
+	{
+		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
+			SearchMinandMaxY(value.amount);
+	}
+
+	private void DrawTitle ()
+	{
+		double posX;
+
+		posX = -((Config.companyName.Length / 2) * 0.035); 
+		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.15, (float)1.9), Quaternion.identity);
 		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
-		
-		double posX = -0.7;
+	}
+
+	private void DrawFirstGraphic ()
+	{
+		double posX = -((24/2)*0.06);
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
 			GameObject newElemGraph = (GameObject)Instantiate(prefabBar, new Vector3((float)posX, (float)(-0.2 + (value.amount/100)), 2), Quaternion.identity);
-			newElemGraph.transform.localScale = new Vector3((float)0.05, value.amount/100, (float)0.05);
+			newElemGraph.transform.localScale = new Vector3((float)0.05, value.amount / 100, (float)0.05);
 			newElemGraph.transform.parent = parentTools.transform;
 
 			//print("heure =" + value.time + ", montant = " + value.amount + " " + Config.currency);
-			posX += 0.07;
+			posX += 0.06;
 		}
+	}
+
+	private void ZoomInOneHour (double Hour)
+	{
+		//A compléter et revoir :
+		/*
+		double posX = -((60/2)*0.012);
+
+		for (int i = 0; i < 60; i++)
+		{
+			GameObject newElemGraph = (GameObject)Instantiate(prefabBar, new Vector3((float)posX, (float)(-0.2 + (value.amount/100)), 2), Quaternion.identity);
+			newElemGraph.transform.localScale = new Vector3((float)0.01, value.amount / 100, (float)0.01);
+			newElemGraph.transform.parent = parentTools.transform;
+
+			posX += 0.012;
+		}
+		*/
+	}
+
+	public IEnumerator DrawGraph ()
+	{
+		print("DrawGraph");
+		yield return StartCoroutine("getSharePriceList");
+
+		SearchMinandMaxYinList();
+		print("yMin = " + yMin + ", yMax = " + yMax);
+		DrawTitle();
+		DrawFirstGraphic();
 
 		print("list = " + sharePriceList);
 		print ("Lancement du Graph");
