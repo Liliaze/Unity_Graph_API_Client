@@ -1195,7 +1195,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabTitle: {fileID: 1000010631496378, guid: 4b39c3f8be4af3943b4dcbab02581dbf,
     type: 2}
-  prefabBar: {fileID: 1000012618034852, guid: 7e6b4187bd5c98d4abb8ca7d0dc13717, type: 2}
+  prefabGreenBar: {fileID: 1000012618034852, guid: d415fad8f9360d347a69e08be1f0af46,
+    type: 2}
+  prefabBlueBar: {fileID: 1000012618034852, guid: 959be39ddbfb16546a4dbfc0ed22eec9,
+    type: 2}
+  prefabRedBar: {fileID: 1000012618034852, guid: 7e6b4187bd5c98d4abb8ca7d0dc13717,
+    type: 2}
   parentTools: {fileID: 712688560}
 --- !u!1 &827659162
 GameObject:
@@ -2195,6 +2200,10 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 45
       objectReference: {fileID: 0}
+    - target: {fileID: 1000012618034852, guid: 7e6b4187bd5c98d4abb8ca7d0dc13717, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7e6b4187bd5c98d4abb8ca7d0dc13717, type: 2}
   m_IsPrefabParent: 0
@@ -2483,8 +2492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eb75f2be628fac4a9c53bf98b35021d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabDebug: {fileID: 1000010631496378, guid: 4b39c3f8be4af3943b4dcbab02581dbf,
-    type: 2}
 --- !u!65 &1494572920
 BoxCollider:
   m_ObjectHideFlags: 0

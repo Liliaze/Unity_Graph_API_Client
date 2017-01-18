@@ -45,6 +45,9 @@ public class CompanyListOptions : MonoBehaviour
 		}
 
 		dropDown.AddOptions(options);
+		CompanyInfosM test;
+		test = companyList.companyList[0];
+		Config.companyName = test.name;
 	}
 
 	public void OnSelectName (Text t)
