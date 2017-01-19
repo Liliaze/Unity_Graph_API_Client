@@ -15,6 +15,9 @@ public class onSelectOption : MonoBehaviour {
 
 	public void OnSelectColors (GameObject croix)
 	{
-		
+		if (croix.activeSelf == true)
+			croix.SetActive(false);
+		else
+			croix.SetActive(true);
 	}
 }
