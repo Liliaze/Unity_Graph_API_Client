@@ -14,5 +14,5 @@ public static class Config
 
 	public static string companyName = "No Name";
 	public static char currency = '€';
-	public static string date = DateTime.Now.ToString("yyyy-MM-dd");
+	public static string date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
 }

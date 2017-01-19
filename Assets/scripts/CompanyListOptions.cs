@@ -14,12 +14,12 @@ public class CompanyListOptions : MonoBehaviour
 
 	private IEnumerator Start ()
 	{
+		//Requête API pour récupérer la liste des entreprises :
 		dropDown = GetComponent<Dropdown>();
 		dropDown.ClearOptions();
 
 		//WWW www = new WWW(Config.graph_api_base_path + Config.companyListPath);
 		UnityWebRequest www = UnityWebRequest.Get(Config.graph_api_base_path + Config.companyListPath);
-
 		yield return www.Send();
 		//print(www.text);
 		print(www.url);
@@ -37,14 +37,16 @@ public class CompanyListOptions : MonoBehaviour
 
 		//companyList = JsonUtility.FromJson<CompanyListM>(www.text);
 		companyList = JsonUtility.FromJson<CompanyListM>(www.downloadHandler.text);
+		
+		//Ajout des noms d'entreprises à la liste de choix :
 		options = new List<string>();
-
 		foreach (CompanyInfosM company in companyList.companyList)
 		{
 			options.Add(company.name);
 		}
-
 		dropDown.AddOptions(options);
+
+		//Enregistrement de la première valeur de champs comme nom par défaut:
 		CompanyInfosM test;
 		test = companyList.companyList[0];
 		Config.companyName = test.name;
@@ -52,7 +54,7 @@ public class CompanyListOptions : MonoBehaviour
 
 	public void OnSelectName (Text t)
 	{
-		//print(t.text);
+		//Enregistrement de la valeur de champs choisit par l'utilisateur à chaque clique :
 		Config.companyName = t.text;
 		print(Config.companyName);
 	}

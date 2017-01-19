@@ -7,10 +7,12 @@ public class Graph : MonoBehaviour {
 
 	public static Graph singleton;
 	public GameObject prefabTitle = null;
-	public GameObject prefabGreenBar = null;
-	public GameObject prefabBlueBar = null;
-	public GameObject prefabRedBar = null;
+	public GameObject prefab = null;
+	//public GameObject prefabBlueBar = null;
+	//public GameObject prefabRedBar = null;
 	public GameObject parentTools = null;
+
+	private GameObject[] newElemGraph = new GameObject[24]; 
 
 	private double yMin = 0;
 	private double yMax = 0;
@@ -28,63 +30,45 @@ public class Graph : MonoBehaviour {
 		singleton = this as Graph;
 	}
 
+	public IEnumerator DrawGraph ()
+	{
+		print("DrawGraph");
+		yield return StartCoroutine("getSharePriceList");
+
+		SearchMinandMaxYinList();
+		DrawTitle();
+		DrawFirstGraphic();
+
+		yield return StartCoroutine("updateList");
+		yield return new WaitForSeconds(3);
+		reDrawGraphic();
+		yield return StartCoroutine("updateList");
+		yield return new WaitForSeconds(3);
+		reDrawGraphic();
+		yield return StartCoroutine("updateList");
+		yield return new WaitForSeconds(3);
+		reDrawGraphic();
+	}
+
 	private IEnumerator getSharePriceList ()
 	{
 		print("Récupération des données du Graph");
 
 		string url = string.Format("{0}?{1}={2}&{3}={4}&{5}={6}", Config.graph_api_base_path + Config.companySharePricePath, Config.paramOneName, Config.companyName, Config.paramTwoDate, Config.date, Config.paramThreeCurrency, Config.currency);
-		//print(url);
 
 		UnityWebRequest www = UnityWebRequest.Get(url);
 		yield return www.Send();
-
-		print(www.downloadHandler.text);
 
 		sharePriceList = JsonUtility.FromJson<SharePricesM>(www.downloadHandler.text);
 	}
 
-	private void swapArrayAndInsert (string time, float amount)
+	private void DrawTitle ()
 	{
-		/*
-		print("---------BEFORE-----" + sharePriceList.sharePrices.Length);
-		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
-		{
-			print("time = " + value.time + "amount = " + value.amount);
-		}
-		*/
-		for (int i = 0; i < 23; i++)
-		{
-			sharePriceList.sharePrices[i] = sharePriceList.sharePrices[i + 1];
-		}
-		sharePriceList.sharePrices[23].time = time;
-		sharePriceList.sharePrices[23].amount = amount;
-		/*
-		print("---------AFTER-----" + sharePriceList.sharePrices.Length);
-		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
-		{
-			print("time = " + value.time + "amount = " + value.amount);
-		}
-		*/
-	}
+		double posX;
 
-	private IEnumerator updateList ()
-	{
-		//CompanySharePriceM newElemList = null;
-		DateTime newHours = Convert.ToDateTime(sharePriceList.sharePrices[sharePriceList.sharePrices.Length - 1].time);
-		print("newHours:" + newHours);
-		newHours.AddHours(1);
-		print("newHours + 1 :" + newHours);
-		string tmp = newHours.ToString("yyyy-MM-dd hh:mm:ss");
-
-		print("Changement des données du Graph");
-
-		string url = string.Format("{0}?{1}={2}", Config.graph_api_base_path + Config.oneNewPricePath, Config.paramOneName, Config.companyName);
-		print(url);
-		UnityWebRequest www = UnityWebRequest.Get(url);
-		yield return www.Send();
-		print(www.downloadHandler.text);
-		oneNewPrice = JsonUtility.FromJson<OneNewPriceM>(www.downloadHandler.text);
-		swapArrayAndInsert(tmp, oneNewPrice.oneNewPrice);
+		posX = -((Config.companyName.Length / 2) * 0.035);
+		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.15, (float)1.9), Quaternion.identity);
+		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
 	}
 
 	private void SearchMinandMaxY (double amount)
@@ -101,45 +85,145 @@ public class Graph : MonoBehaviour {
 			SearchMinandMaxY(value.amount);
 	}
 
-	private void DrawTitle ()
-	{
-		double posX;
-
-		posX = -((Config.companyName.Length / 2) * 0.035); 
-		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.15, (float)1.9), Quaternion.identity);
-		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
-	}
-
-	private GameObject chooseBarPrefab (double amount)
+	private void changeColorPrefab (double amount, GameObject prefab)
 	{
 		if (previousAmount < amount)
-			return (prefabGreenBar);
+			prefab.GetComponent<Renderer>().material.color = Color.green;
 		else if (previousAmount == amount)
-			return (prefabBlueBar);
+			prefab.GetComponent<Renderer>().material.color = Color.blue;
 		else
-			return (prefabRedBar);
+			prefab.GetComponent<Renderer>().material.color = Color.red;
 	}
 
-	private void DrawGraphic ()
+	private void DrawFirstGraphic ()
 	{
 		double posX = -((24/2)*0.06);
 		double coef = yMax / 100;
-		GameObject prefab = null;
+		int index = 0;
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
 			float yScale = (float)((value.amount / coef) / 300);
-			prefab = chooseBarPrefab(value.amount);
-			GameObject newElemGraph = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), 2), Quaternion.identity);
-			newElemGraph.transform.localScale = new Vector3((float)0.05, yScale , (float)0.05);
-			newElemGraph.transform.parent = parentTools.transform;
 
-			//print("heure =" + value.time + ", montant = " + value.amount + " " + Config.currency);
+			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), 2), Quaternion.identity);
+			changeColorPrefab(value.amount, newElemGraph[index]);
+			newElemGraph[index].transform.localScale = new Vector3((float)0.05, yScale, (float)0.05);
+			newElemGraph[index].transform.parent = parentTools.transform;
+
 			previousAmount = value.amount;
 			posX += 0.06;
+			index++;
 		}
 	}
 
+	private void swapArrayAndInsert (string date, float price)
+	{
+		for (int i = 0; i < 23; i++)
+		{
+			sharePriceList.sharePrices[i].time = sharePriceList.sharePrices[i + 1].time;
+			sharePriceList.sharePrices[i].amount = sharePriceList.sharePrices[i + 1].amount;
+		}
+		sharePriceList.sharePrices[23].time = date;
+		sharePriceList.sharePrices[23].amount = price;
+	}
+
+	/*Bouton à créer voir update permanent si sélectionné, arrêt si décoché
+	private void onSelectUpdateGraphic()
+	{
+		yield return StartCoroutine("updateList");
+		yield return new WaitForSeconds(3);
+		reDrawGraphic();
+	}
+	*/
+
+	private IEnumerator updateList ()
+	{
+		string newDate = null;
+		float newPrice = 0;
+
+		//Requête pour récupérer un nouveau montant
+		yield return StartCoroutine("getNewPrice");
+		newPrice = oneNewPrice.oneNewPrice;
+
+		//Mise à jour de la date correspondante
+		newDate = getNewDateAddHours(sharePriceList.sharePrices[sharePriceList.sharePrices.Length - 1].time);
+
+		//Mise à jour du tableau de valeur et insertion des nouvelles données
+		swapArrayAndInsert(newDate, newPrice);
+		SearchMinandMaxYinList();
+		yield return null;
+	}
+
+	private IEnumerator getNewPrice ()
+	{
+		string url = string.Format("{0}?{1}={2}", Config.graph_api_base_path + Config.oneNewPricePath, Config.paramOneName, Config.companyName);
+
+		UnityWebRequest www = UnityWebRequest.Get(url);
+		yield return www.Send();
+
+		oneNewPrice = JsonUtility.FromJson<OneNewPriceM>(www.downloadHandler.text);
+		yield return null;
+	}
+
+	private string getNewDateAddHours (string date)
+	{
+		string newDate = null;
+
+		//print("date à convertir" + date);
+		DateTime newHours = Convert.ToDateTime(date);
+		//print("date convertit :" + newHours);
+		newHours.AddHours(10);
+		newDate = newHours.ToString("yyyy-MM-dd hh:mm:ss");
+		//print("newHours + 1 :" + newDate);
+		return (newDate);
+	}
+
+	private void reDrawGraphic ()
+	{
+		double coef = yMax / 100;
+		float yScale = 0;
+		int index = 0;
+
+		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
+		{
+			yScale = (float)((value.amount / coef) / 300);
+
+			changeColorPrefab(value.amount, newElemGraph[index]);
+			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, (float)(-0.2 + yScale), newElemGraph[index].transform.localPosition.z);
+			newElemGraph[index].transform.localScale = new Vector3((float)0.05, yScale, (float)0.05);
+
+			previousAmount = value.amount;
+			index++;
+		}
+	}
+
+	/*
+		print ("---------IMPRESSION LISTE DES PRICES -----" + sharePriceList.sharePrices.Length);
+		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
+			print ("time = " + value.time + "amount = " + value.amount);
+	*/
+
+
+	/*
+ * A compléter et revoir : 
+private void ZoomInOneHour (double Hour)
+{
+	double posX = -((60/2)*0.012);
+
+	for (int i = 0; i < 60; i++)
+	{
+		GameObject newElemGraph = (GameObject)Instantiate(prefabBar, new Vector3((float)posX, (float)(-0.2 + (value.amount/100)), 2), Quaternion.identity);
+		newElemGraph.transform.localScale = new Vector3((float)0.01, value.amount / 100, (float)0.01);
+		newElemGraph.transform.parent = parentTools.transform;
+
+		posX += 0.012;
+	}
+}
+*/
+
+	/*
+	 * fonction pour supprimer les 24 prefabs enfants du dossier parentTools
+	 * A appeler avec : yield return StartCoroutine("DestroyGraphic");
 	private void DestroyGraphic ()
 	{
 		GameObject child = null;
@@ -150,35 +234,6 @@ public class Graph : MonoBehaviour {
 		}
 		//yield return ("");
 	}
-
-	private void ZoomInOneHour (double Hour)
-	{
-		//A compléter et revoir :
-		/*
-		double posX = -((60/2)*0.012);
-
-		for (int i = 0; i < 60; i++)
-		{
-			GameObject newElemGraph = (GameObject)Instantiate(prefabBar, new Vector3((float)posX, (float)(-0.2 + (value.amount/100)), 2), Quaternion.identity);
-			newElemGraph.transform.localScale = new Vector3((float)0.01, value.amount / 100, (float)0.01);
-			newElemGraph.transform.parent = parentTools.transform;
-
-			posX += 0.012;
-		}
-		*/
-	}
-
-	public IEnumerator DrawGraph ()
-	{
-		print("DrawGraph");
-		yield return StartCoroutine("getSharePriceList");
-
-		SearchMinandMaxYinList();
-		DrawTitle();
-		DrawGraphic();
-
-		yield return StartCoroutine("DestroyGraphic");
-		yield return StartCoroutine("updateList");
-		DrawGraphic();
-	}
+	*/
 }
+
