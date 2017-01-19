@@ -32,7 +32,6 @@ public class Graph : MonoBehaviour {
 
 	public IEnumerator DrawGraph ()
 	{
-		print("DrawGraph");
 		yield return StartCoroutine("getSharePriceList");
 
 		SearchMinandMaxYinList();
@@ -69,6 +68,7 @@ public class Graph : MonoBehaviour {
 		posX = -((Config.companyName.Length / 2) * 0.035);
 		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.15, (float)1.9), Quaternion.identity);
 		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
+		titleCompany.transform.parent = parentTools.transform;
 	}
 
 	private void SearchMinandMaxY (double amount)
@@ -97,7 +97,7 @@ public class Graph : MonoBehaviour {
 
 	private void DrawFirstGraphic ()
 	{
-		double posX = -((24/2)*0.06);
+		double posX = -((24/2)*0.05);
 		double coef = yMax / 100;
 		int index = 0;
 
@@ -107,11 +107,11 @@ public class Graph : MonoBehaviour {
 
 			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), 2), Quaternion.identity);
 			changeColorPrefab(value.amount, newElemGraph[index]);
-			newElemGraph[index].transform.localScale = new Vector3((float)0.05, yScale, (float)0.05);
+			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
 			newElemGraph[index].transform.parent = parentTools.transform;
 
 			previousAmount = value.amount;
-			posX += 0.06;
+			posX += 0.05;
 			index++;
 		}
 	}
@@ -190,7 +190,7 @@ public class Graph : MonoBehaviour {
 
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, (float)(-0.2 + yScale), newElemGraph[index].transform.localPosition.z);
-			newElemGraph[index].transform.localScale = new Vector3((float)0.05, yScale, (float)0.05);
+			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
 
 			previousAmount = value.amount;
 			index++;
@@ -220,20 +220,5 @@ private void ZoomInOneHour (double Hour)
 	}
 }
 */
-
-	/*
-	 * fonction pour supprimer les 24 prefabs enfants du dossier parentTools
-	 * A appeler avec : yield return StartCoroutine("DestroyGraphic");
-	private void DestroyGraphic ()
-	{
-		GameObject child = null;
-		for (int i = 1; i <= 24; i++)
-		{
-			child = parentTools.transform.GetChild(i).gameObject;
-			Destroy(child);
-		}
-		//yield return ("");
-	}
-	*/
 }
 
