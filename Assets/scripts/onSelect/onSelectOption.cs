@@ -36,14 +36,16 @@ public class onSelectOption : MonoBehaviour {
 
 	private IEnumerator onSelectButonUpdate ()
 	{
-
-		print("in");
 		while (true)
 		{
-			print("coucou");
 			yield return Graph.singleton.StartCoroutine("updateList");
 			yield return new WaitForSeconds(2);
 			Graph.singleton.reDrawGraphic();
 		}
+	}
+
+	public void closeOptionsOnSelectReturn (GameObject croix)
+	{
+		croix.SetActive(false);
 	}
 }
