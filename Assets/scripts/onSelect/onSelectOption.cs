@@ -3,21 +3,47 @@ using System.Collections;
 
 public class onSelectOption : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	public void OnSelectColors (GameObject croix)
+	public void byCheckingColors (GameObject croix)
 	{
 		if (croix.activeSelf == true)
+		{
 			croix.SetActive(false);
+			Graph.activeColors = false;
+			Graph.singleton.reDrawGraphic();
+		}
 		else
+		{
 			croix.SetActive(true);
+			Graph.activeColors = true;
+			Graph.singleton.reDrawGraphic();
+		}
+	}
+
+	public void byCheckingUpdate (GameObject croix)
+	{
+		if (croix.activeSelf == true)
+		{
+			croix.SetActive(false);
+			print("nada");
+			StopAllCoroutines();
+		}
+		else
+		{
+			croix.SetActive(true);
+			StartCoroutine("onSelectButonUpdate");
+		}
+	}
+
+	private IEnumerator onSelectButonUpdate ()
+	{
+
+		print("in");
+		while (true)
+		{
+			print("coucou");
+			yield return Graph.singleton.StartCoroutine("updateList");
+			yield return new WaitForSeconds(2);
+			Graph.singleton.reDrawGraphic();
+		}
 	}
 }

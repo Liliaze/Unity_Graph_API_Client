@@ -8,9 +8,9 @@ public class Graph : MonoBehaviour {
 	public static Graph singleton;
 	public GameObject prefabTitle = null;
 	public GameObject prefab = null;
-	//public GameObject prefabBlueBar = null;
-	//public GameObject prefabRedBar = null;
 	public GameObject parentTools = null;
+
+	public static bool activeColors = false;
 
 	private GameObject[] newElemGraph = new GameObject[24]; 
 
@@ -37,16 +37,6 @@ public class Graph : MonoBehaviour {
 		SearchMinandMaxYinList();
 		DrawTitle();
 		DrawFirstGraphic();
-
-		yield return StartCoroutine("updateList");
-		yield return new WaitForSeconds(3);
-		reDrawGraphic();
-		yield return StartCoroutine("updateList");
-		yield return new WaitForSeconds(3);
-		reDrawGraphic();
-		yield return StartCoroutine("updateList");
-		yield return new WaitForSeconds(3);
-		reDrawGraphic();
 	}
 
 	private IEnumerator getSharePriceList ()
@@ -87,17 +77,23 @@ public class Graph : MonoBehaviour {
 
 	private void changeColorPrefab (double amount, GameObject prefab)
 	{
-		if (previousAmount < amount)
-			prefab.GetComponent<Renderer>().material.color = Color.green;
-		else if (previousAmount == amount)
-			prefab.GetComponent<Renderer>().material.color = Color.blue;
+		if (activeColors)
+		{
+			if (previousAmount < amount)
+				prefab.GetComponent<Renderer>().material.color = Color.green;
+			else if (previousAmount == amount)
+				prefab.GetComponent<Renderer>().material.color = Color.blue;
+			else
+				prefab.GetComponent<Renderer>().material.color = Color.red;
+		}
 		else
-			prefab.GetComponent<Renderer>().material.color = Color.red;
+			prefab.GetComponent<Renderer>().material.color = Color.yellow;
 	}
 
 	private void DrawFirstGraphic ()
 	{
 		double posX = -((24/2)*0.05);
+		double posZ = 2;
 		double coef = yMax / 100;
 		int index = 0;
 
@@ -105,14 +101,18 @@ public class Graph : MonoBehaviour {
 		{
 			float yScale = (float)((value.amount / coef) / 300);
 
-			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), 2), Quaternion.identity);
+			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), (float)posZ), Quaternion.identity);
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
 			newElemGraph[index].transform.parent = parentTools.transform;
 
+			index++;
 			previousAmount = value.amount;
 			posX += 0.05;
-			index++;
+			if (index < 12)
+				posZ += 0.03;
+			else
+				posZ -= 0.03;
 		}
 	}
 
@@ -178,7 +178,7 @@ public class Graph : MonoBehaviour {
 		return (newDate);
 	}
 
-	private void reDrawGraphic ()
+	public void reDrawGraphic ()
 	{
 		double coef = yMax / 100;
 		float yScale = 0;
