@@ -11,6 +11,7 @@ public class Graph : MonoBehaviour {
 	public GameObject parentTools = null;
 
 	public static bool activeColors = false;
+	public static bool activeDetails = false;
 
 	private GameObject[] newElemGraph = new GameObject[24]; 
 
@@ -105,6 +106,7 @@ public class Graph : MonoBehaviour {
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
 			newElemGraph[index].transform.parent = parentTools.transform;
+			displayAmountDetails(newElemGraph[index], value.amount);
 
 			index++;
 			previousAmount = value.amount;
@@ -191,10 +193,28 @@ public class Graph : MonoBehaviour {
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, (float)(-0.2 + yScale), newElemGraph[index].transform.localPosition.z);
 			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
-
+			displayAmountDetails(newElemGraph[index], value.amount);
 			previousAmount = value.amount;
 			index++;
 		}
+	}
+
+	private void displayAmountDetails (GameObject elem, float amount)
+	{
+		if (activeDetails)
+		{
+			print("in");
+			elem.transform.GetChild(0).GetComponent<TextMesh>().text = Math.Round(amount, 0).ToString();
+			//A FAIRE !!!!!!!!!!!!!!
+			//ajouter ligne de code pour aligner le display des currency.
+		}
+
+		else
+		{
+			elem.transform.GetChild(0).GetComponent<TextMesh>().text = "";
+			print("out");
+		}
+
 	}
 
 	/*
