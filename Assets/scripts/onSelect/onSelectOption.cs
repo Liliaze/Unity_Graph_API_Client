@@ -8,30 +8,28 @@ public class onSelectOption : MonoBehaviour {
 	{
 		if (croix.activeSelf == true)
 		{
-			croix.SetActive(false);
 			Graph.activeColors = false;
-			Graph.singleton.reDrawGraphic();
+			croix.SetActive(false);
 		}
 		else
 		{
-			croix.SetActive(true);
 			Graph.activeColors = true;
-			Graph.singleton.reDrawGraphic();
+			croix.SetActive(true);
 		}
+		Graph.singleton.reDrawGraphic();
 	}
 
 	public void byCheckingUpdate (GameObject croix)
 	{
 		if (croix.activeSelf == true)
 		{
-			croix.SetActive(false);
-			print("nada");
 			StopAllCoroutines();
+			croix.SetActive(false);
 		}
 		else
 		{
-			croix.SetActive(true);
 			StartCoroutine("onSelectButonUpdate");
+			croix.SetActive(true);
 		}
 	}
 

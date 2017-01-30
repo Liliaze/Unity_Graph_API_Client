@@ -56,8 +56,8 @@ public class Graph : MonoBehaviour {
 	{
 		double posX;
 
-		posX = -((Config.companyName.Length / 2) * 0.035);
-		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.15, (float)1.9), Quaternion.identity);
+		posX = -((Config.companyName.Length / 2) * 0.01);
+		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.21, (float)1.9), Quaternion.identity);
 		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
 		titleCompany.transform.parent = parentTools.transform;
 	}
@@ -93,28 +93,25 @@ public class Graph : MonoBehaviour {
 
 	private void DrawFirstGraphic ()
 	{
-		double posX = -((24/2)*0.05);
+		float sizeXY = (float)0.02;
+		double posX = -((24 / 2) * sizeXY);
 		double posZ = 2;
 		double coef = yMax / 100;
 		int index = 0;
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
-			float yScale = (float)((value.amount / coef) / 300);
+			float yScale = (float)((value.amount / coef) / 600);
 
 			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), (float)posZ), Quaternion.identity);
 			changeColorPrefab(value.amount, newElemGraph[index]);
-			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
+			newElemGraph[index].transform.localScale = new Vector3(sizeXY, yScale, sizeXY);
 			newElemGraph[index].transform.parent = parentTools.transform;
 			displayAmountDetails(newElemGraph[index], value.amount);
 
 			index++;
 			previousAmount = value.amount;
-			posX += 0.05;
-			if (index < 12)
-				posZ += 0.03;
-			else
-				posZ -= 0.03;
+			posX += sizeXY * 1.25;
 		}
 	}
 
@@ -128,15 +125,6 @@ public class Graph : MonoBehaviour {
 		sharePriceList.sharePrices[23].time = date;
 		sharePriceList.sharePrices[23].amount = price;
 	}
-
-	/*Bouton à créer voir update permanent si sélectionné, arrêt si décoché
-	private void onSelectUpdateGraphic()
-	{
-		yield return StartCoroutine("updateList");
-		yield return new WaitForSeconds(3);
-		reDrawGraphic();
-	}
-	*/
 
 	private IEnumerator updateList ()
 	{
@@ -182,17 +170,18 @@ public class Graph : MonoBehaviour {
 
 	public void reDrawGraphic ()
 	{
+		float sizeXY = (float)0.02;
 		double coef = yMax / 100;
 		float yScale = 0;
 		int index = 0;
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
-			yScale = (float)((value.amount / coef) / 300);
+			yScale = (float)((value.amount / coef) / 600);
 
 			changeColorPrefab(value.amount, newElemGraph[index]);
-			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, (float)(-0.2 + yScale), newElemGraph[index].transform.localPosition.z);
-			newElemGraph[index].transform.localScale = new Vector3((float)0.04, yScale, (float)0.04);
+			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, yScale, newElemGraph[index].transform.localPosition.z);
+			newElemGraph[index].transform.localScale = new Vector3(sizeXY, yScale, sizeXY);
 			displayAmountDetails(newElemGraph[index], value.amount);
 			previousAmount = value.amount;
 			index++;
@@ -203,7 +192,6 @@ public class Graph : MonoBehaviour {
 	{
 		if (activeDetails)
 		{
-			print("in");
 			elem.transform.GetChild(0).GetComponent<TextMesh>().text = Math.Round(amount, 0).ToString();
 			//A FAIRE !!!!!!!!!!!!!!
 			//ajouter ligne de code pour aligner le display des currency.
@@ -212,7 +200,6 @@ public class Graph : MonoBehaviour {
 		else
 		{
 			elem.transform.GetChild(0).GetComponent<TextMesh>().text = "";
-			print("out");
 		}
 
 	}
