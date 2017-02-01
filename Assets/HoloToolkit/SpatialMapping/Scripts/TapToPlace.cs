@@ -17,8 +17,9 @@ namespace HoloToolkit.Unity
     /// TapToPlace also adds a WorldAnchor component to enable persistence.
     /// </summary>
 
-    public class TapToPlace : MonoBehaviour, IInputClickHandler
+    public class TapToPlace : MonoBehaviour
     {
+
         [Tooltip("Supply a friendly name for the anchor as the key name for the WorldAnchorStore.")]
         public string SavedAnchorFriendlyName = "SavedAnchorFriendlyName";
 
@@ -95,27 +96,27 @@ namespace HoloToolkit.Unity
             }
         }
 
-        public void OnInputClicked(InputEventData eventData)
-        {
-            // On each tap gesture, toggle whether the user is in placing mode.
-            placing = !placing;
+        public void OnSelectMove()
+		{	
+				// On each tap gesture, toggle whether the user is in placing mode.
+				placing = !placing;
 
-            // If the user is in placing mode, display the spatial mapping mesh.
-            if (placing)
-            {
-                spatialMappingManager.DrawVisualMeshes = true;
+				// If the user is in placing mode, display the spatial mapping mesh.
+				if (placing)
+				{
+					spatialMappingManager.DrawVisualMeshes = true;
 
-                Debug.Log(gameObject.name + " : Removing existing world anchor if any.");
+					Debug.Log(gameObject.name + " : Removing existing world anchor if any.");
 
-                anchorManager.RemoveAnchor(gameObject);
-            }
-            // If the user is not in placing mode, hide the spatial mapping mesh.
-            else
-            {
-                spatialMappingManager.DrawVisualMeshes = false;
-                // Add world anchor when object placement is done.
-                anchorManager.AttachAnchor(gameObject, SavedAnchorFriendlyName);
-            }
+					anchorManager.RemoveAnchor(gameObject);
+				}
+				// If the user is not in placing mode, hide the spatial mapping mesh.
+				else
+				{
+					spatialMappingManager.DrawVisualMeshes = false;
+					// Add world anchor when object placement is done.
+					anchorManager.AttachAnchor(gameObject, SavedAnchorFriendlyName);
+				}
         }
-    }
+	}
 }

@@ -15,8 +15,8 @@ public class Graph : MonoBehaviour {
 
 	private GameObject[] newElemGraph = new GameObject[24]; 
 
-	private double yMin = 0;
-	private double yMax = 0;
+	private float yMin = 0;
+	private float yMax = 0;
 	private double previousAmount = 0;
 
 	private static SharePricesM sharePriceList;
@@ -62,7 +62,7 @@ public class Graph : MonoBehaviour {
 		titleCompany.transform.parent = parentTools.transform;
 	}
 
-	private void SearchMinandMaxY (double amount)
+	private void SearchMinandMaxY (float amount)
 	{
 		if (amount < yMin)
 			yMin = amount;
@@ -93,17 +93,19 @@ public class Graph : MonoBehaviour {
 
 	private void DrawFirstGraphic ()
 	{
-		float sizeXY = (float)0.02;
-		double posX = -((24 / 2) * sizeXY);
-		double posZ = 2;
-		double coef = yMax / 100;
+		float sizeXY = 0.02f;
+		float posX = parentTools.transform.position.x -((24.0f / 2.0f) * sizeXY);
+		float posZ = parentTools.transform.position.z;
+		float posY = parentTools.transform.position.y;
+		float coef = yMax / 100.0f;
 		int index = 0;
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
 			float yScale = (float)((value.amount / coef) / 600);
 
-			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3((float)posX, (float)(-0.2 + yScale), (float)posZ), Quaternion.identity);
+
+			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3(posX, (posY + yScale), posZ), Quaternion.identity);
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localScale = new Vector3(sizeXY, yScale, sizeXY);
 			newElemGraph[index].transform.parent = parentTools.transform;
@@ -111,7 +113,7 @@ public class Graph : MonoBehaviour {
 
 			index++;
 			previousAmount = value.amount;
-			posX += sizeXY * 1.25;
+			posX += sizeXY * 1.25f;
 		}
 	}
 
