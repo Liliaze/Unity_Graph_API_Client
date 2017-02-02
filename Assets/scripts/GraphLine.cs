@@ -46,10 +46,11 @@ public class GraphLine : MonoBehaviour {
 	void Update () {
         for (int i = 0; i < nbr_points; i++)
         {
-            Vector3 newPos = transform.position;
-            newPos.x += (width / nbr_points) * i;
+            Vector3 newPos = new Vector3();
+            newPos.x = (width / nbr_points) * i;
             if (MoreDistantData() != 0.0)
-                newPos.y += ((float)data[i] / (float)MoreDistantData()) * height;
+                newPos.y = ((float)data[i] / (float)MoreDistantData()) * height;
+            newPos.z = 0.0f;
             linerender.SetPosition(i, newPos);
         }
     }

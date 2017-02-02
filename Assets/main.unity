@@ -653,7 +653,7 @@ Prefab:
     - target: {fileID: 120000013874768444, guid: 0ba17a875cbef7844abea9b4881f271a,
         type: 2}
       propertyPath: m_UseWorldSpace
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000013640123386, guid: 0ba17a875cbef7844abea9b4881f271a,
         type: 2}
