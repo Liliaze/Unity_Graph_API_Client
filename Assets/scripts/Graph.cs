@@ -36,7 +36,6 @@ public class Graph : MonoBehaviour {
 		yield return StartCoroutine("getSharePriceList");
 
 		SearchMinandMaxYinList();
-		DrawTitle();
 		DrawFirstGraphic();
 	}
 
@@ -52,12 +51,10 @@ public class Graph : MonoBehaviour {
 		sharePriceList = JsonUtility.FromJson<SharePricesM>(www.downloadHandler.text);
 	}
 
-	private void DrawTitle ()
+	private void DrawTitle (float posX, float posY, float posZ)
 	{
-		double posX;
-
-		posX = -((Config.companyName.Length / 2) * 0.01);
-		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3((float)posX, (float)-0.21, (float)1.9), Quaternion.identity);
+		posX = (posX / 2.0f) - ((Config.companyName.Length / 2.0f) * 0.02f);
+		GameObject titleCompany = (GameObject)Instantiate(prefabTitle, new Vector3(posX, posY, posZ), Quaternion.identity);
 		titleCompany.GetComponent<TextMesh>().text = Config.companyName;
 		titleCompany.transform.parent = parentTools.transform;
 	}
@@ -93,8 +90,8 @@ public class Graph : MonoBehaviour {
 
 	private void DrawFirstGraphic ()
 	{
-		float sizeXY = 0.02f;
-		float posX = parentTools.transform.position.x -((24.0f / 2.0f) * sizeXY);
+		float sizeXY = 0.03f;
+		float posX = parentTools.transform.position.x -((24.0f / 2.0f) * (sizeXY * 1.5f));
 		float posZ = parentTools.transform.position.z;
 		float posY = parentTools.transform.position.y;
 		float coef = yMax / 100.0f;
@@ -102,7 +99,7 @@ public class Graph : MonoBehaviour {
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
-			float yScale = (float)((value.amount / coef) / 600);
+			float yScale = (value.amount / coef) / 300.0f;
 
 
 			newElemGraph[index] = (GameObject)Instantiate(prefab, new Vector3(posX, (posY + yScale), posZ), Quaternion.identity);
@@ -115,6 +112,7 @@ public class Graph : MonoBehaviour {
 			previousAmount = value.amount;
 			posX += sizeXY * 1.25f;
 		}
+		DrawTitle(posX, posY - 0.03f, posZ);
 	}
 
 	private void swapArrayAndInsert (string date, float price)
@@ -172,14 +170,14 @@ public class Graph : MonoBehaviour {
 
 	public void reDrawGraphic ()
 	{
-		float sizeXY = (float)0.02;
-		double coef = yMax / 100;
-		float yScale = 0;
+		float sizeXY = 0.03f;
+		float coef = yMax / 100.0f;
+		float yScale = 0.0f;
 		int index = 0;
 
 		foreach (CompanySharePriceM value in sharePriceList.sharePrices)
 		{
-			yScale = (float)((value.amount / coef) / 600);
+			yScale = (value.amount / coef) / 300.0f;
 
 			changeColorPrefab(value.amount, newElemGraph[index]);
 			newElemGraph[index].transform.localPosition = new Vector3(newElemGraph[index].transform.localPosition.x, yScale, newElemGraph[index].transform.localPosition.z);
