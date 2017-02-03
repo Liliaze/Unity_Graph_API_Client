@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356392, g: 0.38112, b: 0.35887662, a: 1}
+  m_IndirectSpecularColor: {r: 0.37356448, g: 0.3811204, b: 0.35887685, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -2744,7 +2744,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &719863899
 GameObject:
@@ -3205,8 +3205,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 750257279}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.73, y: 0.10000001, z: -0.20000005}
-  m_LocalScale: {x: 0.007, y: 0.78, z: 0.007}
+  m_LocalPosition: {x: 0.45, y: 0.10000001, z: -0.20000005}
+  m_LocalScale: {x: 0.007, y: 0.45, z: 0.007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_Children: []
   m_Father: {fileID: 252953696}
@@ -3269,14 +3269,15 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 750257279}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d51cb2714e9f7aa43b4a625e90977d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorInWorld: {fileID: 1623269122}
-  prefabTypeOfGraph: {fileID: 1000013695489816, guid: 5ca2c263370cb3849a277840689fd698,
-    type: 2}
+  axeX: {fileID: 0}
+  pointeX: {fileID: 0}
+  axeY: {fileID: 0}
+  pointeY: {fileID: 0}
 --- !u!1 &752557069
 GameObject:
   m_ObjectHideFlags: 0
@@ -6763,11 +6764,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1620620686}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1623269122 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1000012943254746, guid: b2db04283121ca74495c2ee000fb4243,
-    type: 2}
-  m_PrefabInternal: {fileID: 1775615828}
 --- !u!1 &1630876625
 GameObject:
   m_ObjectHideFlags: 0

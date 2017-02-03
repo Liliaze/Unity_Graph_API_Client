@@ -1,34 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MovePrecisionBar : MonoBehaviour {
-
-	public GameObject cursorInWorld = null;
-	public GameObject prefabTypeOfGraph = null;
-	private float CursorPosX = 0;
-	private float CursorPosY = 0; 
-
+public class MovePrecisionBar : MonoBehaviour
+{
 
 	// SCRIPT NON FINI EN COURS DE REDACTION
-	void Update () {
+	void Update ()
+	{
+		var headPosition = Camera.main.transform.position;
+		var gazeDirection = Camera.main.transform.forward;
+
 		if (this.isActiveAndEnabled)
 		{
-			CursorPosX = cursorInWorld.transform.position.x;
-			CursorPosY = cursorInWorld.transform.position.y;
-			Ray ray = Camera.main.ScreenPointToRay(new Vector2(CursorPosX, CursorPosY));
+			//Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
-			print("update moveBar");
-			if (Physics.Raycast(ray, out hit, 300))
+			if (Physics.Raycast(headPosition, gazeDirection, out hit, 3))
 			{
-				print(hit.GetType());
-				if (hit.GetType() == prefabTypeOfGraph.GetType())
-				{
-					this.gameObject.transform.position = hit.transform.position;
-					print("hello");
-				}
+				gameObject.transform.position = new Vector3(gameObject.transform.position.x, hit.transform.position.y, gameObject.transform.position.z);
 			}
+			print("gameObject pos = " + gameObject.transform.position + ",hit pos : " + hit.transform.position);
 		}
 	}
-
-
 }
